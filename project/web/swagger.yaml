@@ -1,0 +1,95 @@
+openapi: 3.0.0
+info:
+  title: Try it out with Swagger
+  version: 1.0.0
+  description: |
+    1. Click the **"Authorize"** button (top right) and enter your `x-api-key`.
+    2. Use the **"Try it out"** button on any endpoint to send a request.
+servers:
+  - url: 'http://104.236.233.201:3000'
+    description: Production server
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+  schemas:
+    ImageRequest:
+      type: object
+      required:
+        - image_url
+      properties:
+        image_url:
+          type: string
+          format: uri
+          example: https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/RedbudOhio02.jpg/1280px-RedbudOhio02.jpg
+paths:
+  /tags:
+    post:
+      summary: Analyze image and return tags
+      tags:
+        - Endpoints
+      description: |
+        Accepts a publicly accessible image URL and returns a list of descriptive tags found in the image with 
+        a confidence score for each tag. These tags help provide a high-level understanding of the image content.
+        Useful for categorization, indexing, or content-based filtering.
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageRequest'
+  /objects:
+    post:
+      summary: Analyze image and return detected objects
+      tags:
+        - Endpoints
+      description: |
+        Accepts a publicly accessible image URL and returns objects present in the image along with their bounding boxes and confidence scores.
+        Also identifies parent-child relationships between objects (e.g., a "tree" as a child of "plant").
+        Useful for spatial analysis, object detection use cases, and scene understanding.
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageRequest'
+  /description:
+    post:
+      summary: Analyze image and return a description
+      tags:
+        - Endpoints
+      description: |
+        Accepts a publicly accessible image URL and returns a human-readable description (caption) of the image with a confidence score, along with relevant tags.
+        The caption attempts to summarize the image content in a single sentence.
+        Useful for accessibility, alt-text generation, or general content summarization.
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageRequest'
+  /metadata:
+    post:
+      summary: Analyze image and return image metadata
+      tags:
+        - Endpoints
+      description: |
+        Accepts a publicly accessible image URL and returns basic metadata about the image, including its height, width, and format.
+        This endpoint does not analyze the image content but provides information about the image file itself.
+        Useful for validating image dimensions or type before processing.
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageRequest'

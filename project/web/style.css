@@ -1,0 +1,186 @@
+/* style.css */
+
+/* Hide the Swagger UI search bar */
+.swagger-ui .topbar { 
+    display: none;
+  }
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body and layout */
+  body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    flex-direction: column;
+    background-color: #fafafa;
+    color: #333;
+  }
+  
+  /* Header */
+  header {
+    background-color: #00f7ff;
+    color: black;
+    padding: 30px;
+    text-align: center;
+  }
+  
+  .header-container h1 {
+    font-size: 3rem;
+    margin-bottom: 10px;
+  }
+  
+  .header-container p {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    max-width: 900px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    width: 250px;
+    position: fixed;
+    top: 100px;
+    left: 0;
+    height: calc(100% - 100px);
+    background-color: #2d2d2d;
+    padding: 30px 20px;
+    color: white;
+    box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .sidebar h2 {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+  }
+  
+  .sidebar ul li {
+    margin: 15px 0;
+  }
+  
+  .sidebar ul li a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    padding: 8px;
+  }
+  
+  .sidebar ul li a:hover {
+    background-color: #575757;
+  }
+  
+  .sidebar-icon {
+    margin-right: 10px;
+    font-size: 1.2rem;
+  }
+  
+  /* Content */
+  .content {
+    margin-left: 270px;
+    padding: 30px;
+    max-width: 1200px;
+  }
+  
+  section {
+    margin-bottom: 40px;
+  }
+
+  #overview h3 {
+    text-align: center;
+  }
+
+  #endpoints ul {
+    list-style-type: none;
+  }
+  
+  #endpoints ul strong {
+    display: block;
+    text-align: left;
+    margin: 0 auto;
+    list-style-type: none;
+    color: #d63384;
+  }
+
+  #error-codes ul {
+    list-style-type: none;
+  }
+
+  #error-codes ul strong {
+    display: block;
+    text-align: center;
+    margin: 0 auto;
+    list-style-type: none;
+    color: red;
+  }
+
+  #error-codes pre {
+    background-color: #2d2d2d;
+    color: #f8f8f2;
+    padding: 1em;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: monospace;
+    line-height: 1.5;
+  }
+
+  section h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  section p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #000000;
+  }
+  
+  section ul {
+    margin-top: 10px;
+  }
+  
+  section ul li {
+    font-size: 1.1rem;
+  }
+  
+  pre {
+    background-color: #2d2d2d;
+    padding: 20px;
+    border-radius: 5px;
+    margin: 10px 0;
+  }
+  
+  code {
+    color: #d63384;
+    font-family: monospace;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 200px;
+      padding: 20px;
+    }
+  
+    .content {
+      margin-left: 220px;
+    }
+  
+    header {
+      padding: 20px;
+    }
+  }

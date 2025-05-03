@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Analysis API Documentation</title>
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Swagger UI CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.6.0/swagger-ui.min.css" />
+  
+  <!-- Swagger UI JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.6.0/swagger-ui-bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.6.0/swagger-ui-standalone-preset.min.js"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <h1>ITIS 6177 Final Project</h1>
+      <h1>Image Analysis API Documentation</h1>
+    </div>
+  </header>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <ul>
+      <li><a href="#overview"><span class="sidebar-icon">&#9733; Overview</a></li>
+      <li><a href="#start"><span class="sidebar-icon">&#10004; Get Started</a></li>
+      <li><a href="#endpoints"><span class="sidebar-icon">&#128269; Endpoints</a></li>
+      <li><a href="#code-examples"><span class="sidebar-icon">&#128187; Code Example</a></li>
+      <li><a href="#error-codes"><span class="sidebar-icon">&#9888; Error Codes</a></li>
+      <li><a href="#faq"><span class="sidebar-icon">&#10067; FAQ</a></li>
+      <li><a href="#rate-limiting"><span class="sidebar-icon">&#128336; Rate Limiting</a></li>
+      <li><a href="#versioning"><span class="sidebar-icon">&#128197; Versioning</a></li>
+      <li><a href="#swagger-ui"><span class="sidebar-icon"><img src="swagger-ui/favicon-16x16.png" style="width: 20px; height: 20px;"> Try it out</a></li>
+    </ul>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>
+        This API helps you analyze images by utilizing Microsoft Azure's Image Analysis API. 
+        Provide a URL of the image you want to analyze, and the API will return a detailed analysis including 
+        tags, description, detected objects, and metadata.
+      </p>
+      <br>
+      <h3>What the API Does</h3>
+        <div style="text-align: center; margin-top: 1em;">
+          <img src="swagger-ui/API_diagram.png" alt="API Flowchart" style="max-width:100%; height:auto; margin-top: 1em; border: 1px solid #444; border-radius: 8px;">
+        </div>
+    </section>
+    <section id="start">
+      <h2>How to get started:</h2>
+      <ol>
+        <li>Authenticate with an API key using the x-api-key header.</li>
+        <li>Use the /tags, /objects, /description, or /metadata endpoints to submit a publicly accessible image URL in the body.</li>
+        <li>Receive structured results in response.</li>
+      </ol>
+    </section>
+
+    <section id="endpoints">
+      <h2>Endpoints</h2>
+      <p>These are the available endpoints to analyze images:</p>
+      <ul>
+        <li><strong>/tags</strong>
+          <p>Accepts a publicly accessible image URL and returns a list of descriptive tags found in the image with a confidence score for each tag. 
+            These tags help provide a high-level understanding of the image content. Useful for categorization, indexing, or content-based filtering.</p>
+        </li>
+        <li><strong>/objects</strong>
+          <p>Accepts a publicly accessible image URL and returns objects present in the image along with their bounding boxes and confidence scores. 
+            Also identifies parent-child relationships between objects (e.g., a "tree" as a child of "plant"). 
+            Useful for spatial analysis, object detection use cases, and scene understanding.</p>
+        </li>
+        <li><strong>/description</strong>
+        <p>Accepts a publicly accessible image URL and returns a human-readable description (caption) of the image with a confidence score, 
+          along with relevant tags. The caption attempts to summarize the image content in a single sentence. 
+          Useful for accessibility, alt-text generation, or general content summarization.</p>
+        </li>
+        <li><strong>/metadata</strong>
+        <p>Accepts a publicly accessible image URL and returns basic metadata about the image, including its height, width, and format. 
+          This endpoint does not analyze the image content but provides information about the image file itself. 
+          Useful for validating image dimensions or type before processing.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="code-examples">
+      <h2>Code Example</h2>
+      <p>Here is a basic example of how to interact with the API:</p>
+      <pre>
+        <code>
+          curl -X POST http://104.236.233.201:3000/tags \
+          -H "x-api-key: YOUR_API_KEY" \
+          -H "Content-Type: application/json" \
+          -d '{"image_url": "https://yourimageurl.com"}'
+        </code>
+      </pre>
+    </section>
+
+    <section id="error-codes">
+      <h2>Error Codes</h2>
+      <p>If something goes wrong, here are the potential error codes you might encounter:</p>
+      <ul>
+        <li>
+          <strong>400 Bad Request</strong>
+          <p>Missing Image URL</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"Missing 'image_url' in request body."</span>}</pre>
+          <p>Invalid Image URL</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"The image URL is improperly formatted or inaccessible."</span>}</pre>
+          <p>Invalid Image Format</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"The image format is invalid or not supported."</span>}</pre>
+          <p>Invalid Image Size</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"The image is too large to process."</span>}</pre>
+          <p>Not Supported Visual Feature</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"The specified visual feature is not supported."</span>}</pre>
+          <p>Not Supported Image</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"The image is not supported (e.g. contains illegal content)."</span>}</pre>
+          <p>Invalid Details</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"Unsupported parameter value."</span>}</pre>
+          <p>Bad Argument</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"The request contains an invalid argument."</span>}</pre>
+        </li>
+        
+        <li>
+          <strong>401 Unauthorized</strong>
+          <p>Missing API key.</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"Missing API Key."</span>}</pre>
+        </li>
+
+        <li>
+          <strong>403 Forbidden</strong>
+          <p>Invalid API key.</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"Invalid API Key."</span>}</pre>
+        </li>
+
+        <li>
+          <strong>415 Unsupported Media Type</strong>
+          <p>The media type of the request is not supported (e.g., not JSON).</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"The media type of the request is not supported. 
+            Ensure you are using the correct `Content-Type` header."</span>}</pre>
+        </li>
+
+        <li>
+          <strong>500 Internal Server Error</strong>
+          <p>Internal server error.</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"Azure encountered an internal error."</span>}</pre>
+          <p>Failed To Process</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"Azure failed to process the image."</span>}</pre>
+          <p>Timeout</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"Image processing timed out."</span>}</pre>
+          <p>Axios Error</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"Internal server error"</span>}</pre>
+        </li>
+
+        <li>
+          <strong>503 Service Unavailable</strong>
+          <p>The server is currently unable to handle the request.</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"Azure encountered an internal error."</span>}</pre>
+        </li>
+      </ul>
+    </section>
+
+    <section id="faq">
+      <h2>FAQ</h2>
+      <p>Here are some frequently asked questions:</p>
+      <ul>
+        <li><strong>How do I get my API key?</strong> The API key was submitted in Canvasa along with the link to this project.</li>
+        <li><strong>Can I use any image URL?</strong> Any publicly accessible image of the correct format and size.</li>
+      </ul>
+    </section>
+
+    <section id="rate-limiting">
+      <h2>Rate Limiting</h2>
+      <ul>
+        <li>20 transactions per minute</li>
+        <li>5,000 transactions per month</li>
+      </ul>
+    </section>
+
+    <section id="versioning">
+      <h2>Versioning</h2>
+      <p>Current API version: 1.0.0. Changes to the API may be introduced in future versions.</p>
+    </section>
+
+    <!-- Swagger UI -->
+    <section id="swagger-ui">
+      <div id="swagger-ui-container"></div>
+    </section>
+  </div>
+
+  <script>
+    // Initialize Swagger UI
+    const ui = SwaggerUIBundle({
+    url: "swagger.yaml",
+    dom_id: '#swagger-ui-container',
+    deepLinking: true,
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      SwaggerUIStandalonePreset
+    ],
+    layout: "StandaloneLayout",
+    filter: false
+  });
+  </script>
+
+</body>
+</html>
