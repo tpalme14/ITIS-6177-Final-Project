@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Image Analysis API Documentation</title>
+  <link rel="stylesheet" href="swagger.yaml">
   <link rel="stylesheet" href="style.css">
   
   <!-- Swagger UI CSS -->
@@ -57,31 +58,34 @@
       <h2>How to get started:</h2>
       <ol>
         <li>Authenticate with an API key using the x-api-key header.</li>
-        <li>Use the /tags, /objects, /description, or /metadata endpoints to submit a publicly accessible image URL in the body.</li>
+        <li>Use the endpoints to submit a publicly accessible image URL in the body.</li>
         <li>Receive structured results in response.</li>
       </ol>
     </section>
 
     <section id="endpoints">
       <h2>Endpoints</h2>
-      <p>These are the available endpoints to analyze images:</p>
+      <p>Available endpoints to analyze images:</p>
       <ul>
         <li><strong>/tags</strong>
-          <p>Accepts a publicly accessible image URL and returns a list of descriptive tags found in the image with a confidence score for each tag. 
+          <p>Returns a list of descriptive tags found in the image with a confidence score for each tag. 
             These tags help provide a high-level understanding of the image content. Useful for categorization, indexing, or content-based filtering.</p>
+          <br>
         </li>
         <li><strong>/objects</strong>
-          <p>Accepts a publicly accessible image URL and returns objects present in the image along with their bounding boxes and confidence scores. 
+          <p>Returns objects present in the image along with their bounding boxes and confidence scores. 
             Also identifies parent-child relationships between objects (e.g., a "tree" as a child of "plant"). 
             Useful for spatial analysis, object detection use cases, and scene understanding.</p>
+          <br>
         </li>
         <li><strong>/description</strong>
-        <p>Accepts a publicly accessible image URL and returns a human-readable description (caption) of the image with a confidence score, 
+        <p>Returns a human-readable description (caption) of the image with a confidence score, 
           along with relevant tags. The caption attempts to summarize the image content in a single sentence. 
           Useful for accessibility, alt-text generation, or general content summarization.</p>
+        <br>
         </li>
         <li><strong>/metadata</strong>
-        <p>Accepts a publicly accessible image URL and returns basic metadata about the image, including its height, width, and format. 
+        <p>Returns basic metadata about the image, including its height, width, and format. 
           This endpoint does not analyze the image content but provides information about the image file itself. 
           Useful for validating image dimensions or type before processing.</p>
         </li>
@@ -139,9 +143,15 @@
 
         <li>
           <strong>415 Unsupported Media Type</strong>
-          <p>The media type of the request is not supported (e.g., not JSON).</p>
+          <p>The media type of the request is not supported.</p>
           <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"The media type of the request is not supported. 
             Ensure you are using the correct `Content-Type` header."</span>}</pre>
+        </li>
+
+        <li>
+          <strong>429 Too Many Requests</strong>
+          <p>Rate Limit Exceeded</p>
+          <pre>{<span style="color: orange;">"error"</span>: <span style="color: #00afff;">"Rate limit exceeded. Please wait before making more requests."</span>}</pre>
         </li>
 
         <li>
@@ -167,9 +177,16 @@
     <section id="faq">
       <h2>FAQ</h2>
       <p>Here are some frequently asked questions:</p>
+      <br>
       <ul>
-        <li><strong>How do I get my API key?</strong> The API key was submitted in Canvasa along with the link to this project.</li>
-        <li><strong>Can I use any image URL?</strong> Any publicly accessible image of the correct format and size.</li>
+        <li><strong>How do I get my API key?</strong> 
+          <p>Contact the API Administrator for your key</p>
+          <p><span style="color: red;">***API key was submitted in Canvas***</span></p>
+        </li>
+        <br>
+        <li><strong>Can I use any image URL?</strong>
+          <p>Any publicly accessible image of the correct format and size.</p>
+        </li>
       </ul>
     </section>
 

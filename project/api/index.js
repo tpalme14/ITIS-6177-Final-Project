@@ -10,14 +10,19 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors());
+app.use(express.json());
 
-// Serve static files (swagger.html, other assets)
-app.use(express.static(path.join(__dirname, '../web')));
+// Put web assets in /api-docs folder
+app.use('/api-docs', express.static(path.join(__dirname, '../web')));
 
-// Serve Swagger UI HTML page at /api-docs
+// Serve webpage at /api-docs
 app.get('/api-docs', (req, res) => {
   res.sendFile(path.join(__dirname, '../web/index.html'));
 });
+
+const swaggerDocument = yaml.load(fs.readFileSync(path.join(__dirname, '../web/swagger.yaml'), 'utf8'));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Set up Logging
 const accessLogStream = fs.createWriteStream(
@@ -66,7 +71,7 @@ const validateRequest = (req, res, next) => {
   }
 
 
-  // If no errors, continue to the next middleware or route handler
+  // If no errors, continue
   next();
 };
 
@@ -114,33 +119,32 @@ const analyzeImage = async (imageUrl, visualFeatures) => {
     if (err.response) {
       // Azure responded with an error status
       const status = err.response.status;
-    const errorData = err.response.data;
+      const errorData = err.response.data;
 
-    // Rate limit error
-    if (status === 429) {
-      return {
-        error: true,
-        status,
-        message: "Rate limit exceeded. Please wait before making more requests.",
-        retryAfter: err.response.headers['retry-after'] || "Try again in 60 seconds."
-      };
-    }
+      // Rate limit error
+      if (status === 429) {
+        throw {
+          status: 429,
+          message: "Rate limit exceeded. Please wait before making more requests.",
+          retryAfter: err.response.headers['retry-after'] || "Try again in 60 seconds."
+        };
+      } 
 
-    const mapped = mapAzureError(errorData);
-    throw {
-      status: mapped.status,
-      message: mapped.message,
-      code: errorData.error?.code,
-      details: process.env.NODE_ENV === 'development' ? errorData : undefined
-    };
-  } else {
-    // Other kinds of errors
-    throw {
-      status: 500,
-      message: "Internal server error",
-      details: err.message,
+      const mapped = mapAzureError(errorData);
+      throw {
+        status: mapped.status,
+        message: mapped.message,
+        code: errorData.error?.code,
+        details: process.env.NODE_ENV === 'development' ? errorData : undefined
       };
-    }
+    } else {
+        // Other kinds of errors
+        throw {
+          status: 500,
+          message: "Internal server error",
+          details: err.message,
+        };
+    } 
   }
 };
 
@@ -152,12 +156,14 @@ app.post('/tags', validateRequest, async (req, res) => {
     const data = await analyzeImage(imageUrl, 'Tags');
     res.json({ tags: data.tags });
   } catch (err) {
+    // Rate Limit Error
     if (err.error && err.status === 429) {
       res.status(429).json({
         error: err.message,
         retryAfter: err.retryAfter
       });
     } else {
+      // Internal Server Error
       res.status(err.status || 500).json({
         error: err.message,
         details: err.details
@@ -174,12 +180,14 @@ app.post('/objects', validateRequest, async (req, res) => {
     const data = await analyzeImage(imageUrl, 'Objects');
     res.json({ objects: data.objects });
   } catch (err) {
+    // Rate Limit Error
     if (err.error && err.status === 429) {
       res.status(429).json({
         error: err.message,
         retryAfter: err.retryAfter
       });
     } else {
+      // Internal Server Error
       res.status(err.status || 500).json({
         error: err.message,
         details: err.details
@@ -196,12 +204,14 @@ app.post('/description', validateRequest, async (req, res) => {
     const data = await analyzeImage(imageUrl, 'Description');
     res.json({ description: data.description });
   } catch (err) {
+    // Rate Limit Error
     if (err.error && err.status === 429) {
       res.status(429).json({
         error: err.message,
         retryAfter: err.retryAfter
       });
     } else {
+      // Internal Server Error
       res.status(err.status || 500).json({
         error: err.message,
         details: err.details
@@ -212,11 +222,10 @@ app.post('/description', validateRequest, async (req, res) => {
 
 // Metadata endpoint
 app.post('/metadata', validateRequest, async (req, res) => {
-
   const imageUrl = req.body.image_url;
   
   try {
-    const data = await analyzeImage(imageUrl, 'Description');  // Metadata is included in the Description response
+    const data = await analyzeImage(imageUrl, 'Description');
     const metadata = {
       height: data.metadata.height,
       width: data.metadata.width,
@@ -224,12 +233,14 @@ app.post('/metadata', validateRequest, async (req, res) => {
     };
     res.json({ metadata });
   } catch (err) {
+    // Rate Limit Error
     if (err.error && err.status === 429) {
       res.status(429).json({
         error: err.message,
         retryAfter: err.retryAfter
       });
     } else {
+      //Internal Server Error
       res.status(err.status || 500).json({
         error: err.message,
         details: err.details

@@ -24,6 +24,13 @@ components:
           type: string
           format: uri
           example: https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/RedbudOhio02.jpg/1280px-RedbudOhio02.jpg
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: string
 paths:
   /tags:
     post:
@@ -42,6 +49,25 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ImageRequest'
+      responses:
+        '200':
+          description: A list of tags identified in the image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                    example: ["flower", "tree", "nature"]
+        '400-500':
+          description: Error Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /objects:
     post:
       summary: Analyze image and return detected objects
@@ -59,6 +85,25 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ImageRequest'
+      responses:
+        '200':
+          description: A list of objects identified in the image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  objects:
+                    type: array
+                    items:
+                      type: string
+                    example: ["tree", "sky", "cloud"]
+        '400-500':
+          description: Error Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /description:
     post:
       summary: Analyze image and return a description
@@ -76,6 +121,23 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ImageRequest'
+      responses:
+        '200':
+          description: A description of the image
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  description:
+                    type: string
+                    example: "A tree with pink flowers"
+        '400-500':
+          description: Error Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /metadata:
     post:
       summary: Analyze image and return image metadata
@@ -93,3 +155,29 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ImageRequest'
+      responses:
+        '200':
+          description: Image metadata such as height, width, and format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  metadata:
+                    type: object
+                    properties:
+                      height:
+                        type: integer
+                        example: 600
+                      width:
+                        type: integer
+                        example: 800
+                      format:
+                        type: string
+                        example: "JPEG"
+        '400-500':
+          description: Error Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
